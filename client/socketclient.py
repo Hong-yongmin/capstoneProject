@@ -9,12 +9,18 @@ class SocketClient:
         self.client_socket = socket(AF_INET, SOCK_STREAM)
         self.client_socket.connect((self.ip, self.port))
 
-        self.client_socket.send("public".encode("utf-8"))
-
-        self.data = self.client_socket.recv(1024)
-
-        print("public key : " + self.data.decode("utf-8"))
-
+    def stop(self):
         self.client_socket.send("quit".encode("utf-8"))
-
         self.client_socket.close()
+
+    def get_key(self, option):
+        if option == 0:
+            self.client_socket.send("public".encode("utf-8"))
+            self.key = self.client_socket.recv(1024)
+        elif option == 1:
+            self.client_socket.send("private".encode("utf-8"))
+            self.key = self.client_socket.recv(1024)
+        else:
+            self.client_socket.send("quit".encode("utf-8"))
+
+        return self.key
