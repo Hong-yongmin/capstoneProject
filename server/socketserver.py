@@ -5,7 +5,7 @@ class SocketServer:
     def __init__(self, key_pair):
         self.host = "127.0.0.1"
         self.port = 8080
-        self.private_key, self.public_key = key_pair
+        self.public_key, self.private_key = key_pair
 
     def start(self):
         print(">>starting server...")
@@ -22,7 +22,7 @@ class SocketServer:
         print(">>client is connected")
 
         while True:
-            data = self.connection_socket.recv(512)
+            data = self.connection_socket.recv(1024)
             data_decode = data.decode("utf-8")
             if data_decode == "public" :
                 self.connection_socket.send(self.public_key)
