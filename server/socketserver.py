@@ -1,11 +1,13 @@
 from socket import *
+from keygenerator import KeyGenerator
+from threading import Thread
 # import ssl
 
 class SocketServer:
-    def __init__(self, key_pair):
+    def __init__(self):
         self.host = "127.0.0.1"
         self.port = 8080
-        self.private_key, self.public_key = key_pair
+        self.key_generator = KeyGenerator()
 
     def start(self):
         print(">>starting server...")
@@ -14,21 +16,24 @@ class SocketServer:
         self.server_socket.listen(1)
         print(">>server is waiting client")
 
-        self.connect()
+        self.connection_socket, self.addr = self.server_socket.accept()
+        print(">>client is connected")
+        Thread(target = self.connect()).start()
 
     def connect(self):
         #self.server_socket.settimeout(5)  # 5초 대기 후 socket.timeout 예외 발생
-        self.connection_socket, self.addr = self.server_socket.accept()
-        print(">>client is connected")
+        key_generator = KeyGenerator()
+        key_generator.generate_key_pair()
+        public_key, private_key = key_generator.get_key_pair()
 
         while True:
             data = self.connection_socket.recv(512)
             data_decode = data.decode("utf-8")
             if data_decode == "public" :
-                self.connection_socket.send(self.public_key)
+                self.connection_socket.send(public_key)
                 print(">>send public key")
             elif data_decode == "private" :
-                self.connection_socket.send(self.private_key)
+                self.connection_socket.send(private_key)
                 print(">>send private key")
             else :
                 print(">>disconnected")

@@ -16,10 +16,10 @@ class SocketClient:
     def get_key(self, option):
         if option == 0:
             self.client_socket.send("public".encode("utf-8"))
-            self.key = self.client_socket.recv(1024)
+            self.key = self.client_socket.recv(2048)
         elif option == 1:
             self.client_socket.send("private".encode("utf-8"))
-            self.key = self.client_socket.recv(1024)
+            self.key = self.client_socket.recv(2048)
         else:
             self.client_socket.send("quit".encode("utf-8"))
 
