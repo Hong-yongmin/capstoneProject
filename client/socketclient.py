@@ -20,7 +20,7 @@ class SocketClient:
             key = serialization.load_pem_public_key(self.client_socket.recv(2048))
         elif option == 1:
             self.client_socket.send("private".encode("utf-8"))
-            key = serialization.load_pem_private_key(self.client_socket.recv(2048))
+            key = serialization.load_pem_private_key(self.client_socket.recv(2048), password=None)
         else:
             self.client_socket.send("quit".encode("utf-8"))
 

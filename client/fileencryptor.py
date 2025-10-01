@@ -2,11 +2,11 @@ import glob
 import os
 from encryption import Encryption
 
-class FileBrowser:
+class FileEncryptor:
     def __init__(self, public_key):
         self.encryptor = Encryption(public_key)
 
-    def browse(self, target, option):
+    def encrypt(self, target):
         file_list = glob.glob(target)
         for file in file_list:
             with open(file, 'rb') as f:
