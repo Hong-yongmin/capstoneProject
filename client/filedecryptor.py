@@ -10,11 +10,14 @@ class FileDecryptor:
         file_list = glob.glob(target)
 
         for file in file_list:
-            with open(file, 'rb') as f:
-                decrypted_file = self.decryptor.decrypt(f.read())
+            if os.path.isdir(file):
+                self.decrypt(file+'/*')
+            else:
+                with open(file, 'rb') as f:
+                    decrypted_file = self.decryptor.decrypt(f.read())
 
-            with open(file, 'wb') as f:
-                f.write(decrypted_file)
+                with open(file, 'wb') as f:
+                    f.write(decrypted_file)
             
-            new_name = file[0:-10] # .encrypted 제거
-            os.rename(file, new_name)
+                new_name = file[0:-10] # .encrypted 제거
+                os.rename(file, new_name)

