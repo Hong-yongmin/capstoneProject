@@ -4,11 +4,9 @@ from threading import Thread
 # import ssl
 
 class SocketServer:
-    def __init__(self, key_pair, aes_key):
+    def __init__(self):
         self.host = "127.0.0.1"
         self.port = 8080
-        self.public_key, self.private_key = key_pair
-        self.key = aes_key
 
     def start(self):
         print(">>starting server...")
@@ -25,7 +23,9 @@ class SocketServer:
         #self.server_socket.settimeout(5)  # 5초 대기 후 socket.timeout 예외 발생
         key_generator = KeyGenerator()
         key_generator.generate_key_pair()
+        key_generator.generate_aes_key()
         public_key, private_key = key_generator.get_key_pair()
+        aes_key = key_generator.get_aes_key()
 
         while True:
             data = self.connection_socket.recv(1024)
@@ -37,7 +37,7 @@ class SocketServer:
                 self.connection_socket.send(private_key)
                 print(">>send private key")
             elif data_decode == "aes":
-                self.connection_socket.send(self.key)
+                self.connection_socket.send(aes_key)
                 print(">>send aes key")
             else :
                 print(">>disconnected")
