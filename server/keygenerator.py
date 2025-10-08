@@ -1,3 +1,4 @@
+import os, base64
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 
@@ -14,6 +15,12 @@ class KeyGenerator:
         self.public_key = self.private_key.public_key()
         print(">>succesfully generate")
 
+    def generate_aes_key(self):
+        self.key = os.urandom(32)
+
+    def get_aes_key(self):
+        encoded_key =  base64.b64encode(self.key)
+        return encoded_key
 
     def get_private_key(self):
         return self.private_key

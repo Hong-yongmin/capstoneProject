@@ -2,10 +2,11 @@ from socket import *
 # import ssl
 
 class SocketServer:
-    def __init__(self, key_pair):
+    def __init__(self, key_pair, aes_key):
         self.host = "127.0.0.1"
         self.port = 8080
         self.public_key, self.private_key = key_pair
+        self.key = aes_key
 
     def start(self):
         print(">>starting server...")
@@ -30,6 +31,9 @@ class SocketServer:
             elif data_decode == "private" :
                 self.connection_socket.send(self.private_key)
                 print(">>send private key")
+            elif data_decode == "aes":
+                self.connection_socket.send(self.key)
+                print(">>send aes key")
             else :
                 print(">>disconnected")
                 break

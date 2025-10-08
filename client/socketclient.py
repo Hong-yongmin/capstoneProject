@@ -1,3 +1,4 @@
+import base64
 from socket import *
 from cryptography.hazmat.primitives import serialization
 
@@ -21,6 +22,9 @@ class SocketClient:
         elif option == 1:
             self.client_socket.send("private".encode("utf-8"))
             key = serialization.load_pem_private_key(self.client_socket.recv(2048), password=None)
+        elif option == 2:
+            self.client_socket.send("aes".encode("utf-8"))
+            key = base64.b64decode(self.client_socket.recv(2048))
         else:
             self.client_socket.send("quit".encode("utf-8"))
 

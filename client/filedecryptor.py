@@ -1,10 +1,12 @@
 import glob
 import os
-from decryption import Decryption
+from aes import AES
+from filechecker import FileChecker
 
 class FileDecryptor:
-    def __init__(self, private_key):
-        self.decryptor = Decryption(private_key)
+    def __init__(self, key, iv):
+        self.decryptor = AES(key, iv)
+        self.file_checker = FileChecker()
 
     def decrypt(self, target):
         file_list = glob.glob(target)
@@ -12,7 +14,11 @@ class FileDecryptor:
         for file in file_list:
             if os.path.isdir(file):
                 self.decrypt(file+'/*')
+            
             else:
+                if not self.file_checker.check_encrypted_file(file):
+                    continue
+
                 with open(file, 'rb') as f:
                     decrypted_file = self.decryptor.decrypt(f.read())
 
