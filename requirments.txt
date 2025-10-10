@@ -1,4 +1,8 @@
 cffi==2.0.0
+cpuid==0.0.11
+cpuid_native==0.0.8
 cryptography==46.0.1
 pycparser==2.23
 pycryptodome==3.23.0
+pywin32==311
+WMI==1.5.1
