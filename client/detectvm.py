@@ -54,7 +54,7 @@ class DetectVM:
         elif self.check_registry():
             score += 1
 
-        if score >= 2:
+        if score >= 1:
             return True
          
         return False
