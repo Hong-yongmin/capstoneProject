@@ -1,4 +1,4 @@
-from socket import *
+import socket
 from keygenerator import KeyGenerator
 from threading import Thread
 # import ssl
@@ -9,18 +9,26 @@ class SocketServer:
         self.port = 8080
 
     def start(self):
-        print(">>starting server...")
-        self.server_socket = socket(AF_INET, SOCK_STREAM)
+        print(">> starting server...")
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.settimeout(1)
         self.server_socket.bind( (self.host, self.port) )
         self.server_socket.listen(1)
-        print(">>server is waiting client")
+        print(">> server is waiting client")
 
-        self.connection_socket, self.addr = self.server_socket.accept()
-        print(">>client is connected")
-        Thread(target = self.connect()).start()
+        try:
+            while True:
+                try:
+                    client_socket, client_addr = self.server_socket.accept()
+                    print(">> client connected:", client_addr)
+                    Thread(target=self.connect, args=(client_socket,), daemon=True).start()
+                except socket.timeout:
+                    continue
+        except KeyboardInterrupt:
+            self.server_socket.close()
+            print(">> close server")
 
-    def connect(self):
-        #self.server_socket.settimeout(5)  # 5초 대기 후 socket.timeout 예외 발생
+    def connect(self, client_socket):
         key_generator = KeyGenerator()
         key_generator.generate_key_pair()
         key_generator.generate_aes_key()
@@ -28,21 +36,21 @@ class SocketServer:
         aes_key = key_generator.get_aes_key()
 
         while True:
-            data = self.connection_socket.recv(1024)
+            data = client_socket.recv(1024)
             data_decode = data.decode("utf-8")
             if data_decode == "public" :
-                self.connection_socket.send(public_key)
+                client_socket.send(public_key)
                 print(">>send public key")
             elif data_decode == "private" :
-                self.connection_socket.send(private_key)
+                client_socket.send(private_key)
                 print(">>send private key")
             elif data_decode == "aes":
-                self.connection_socket.send(aes_key)
+                client_socket.send(aes_key)
                 print(">>send aes key")
             else :
                 print(">>disconnected")
+                client_socket.close()
                 break
 
-        self.server_socket.close()
-        print(">>close server")
+        
     
