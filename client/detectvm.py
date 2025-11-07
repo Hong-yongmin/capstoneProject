@@ -52,9 +52,9 @@ class DetectVM:
         score = 0
         if self.check_system_info():
             score += 4
-        elif self.check_mac():
+        if self.check_mac():
             score += 3
-        elif self.check_disk():
+        if self.check_disk():
             score += 3
 
         if score >= 5:
